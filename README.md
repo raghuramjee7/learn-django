@@ -1,2 +1,114 @@
-# learn-django
-Repo for Django
+## Setup  
+
+To begin with setting up your first Django project, use the following steps  
+
+First, let us understand more about virtual environments.  
+
+### Virtual Environment
+
+Virtual environment is the way to create a isolated environment in your computer with all your packages, libraries in the same version without any conflicts with global versions.  
+
+Python has **venv** , an inbuilt library that is used to create and maintain virtual environments. Let us look at the setup 
+
+**Setup**: python -m venv <env_name>
+
+It is a common practise to name the environment as .venv, so that it is hidden as well as the naming is clear.
+
+After the venv is setup, use this statement to set execution policy "**Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser**" This policy is used for running scripts in windows
+
+Once after it is created, the virtual environment needs to be activated. We have a command for it in windows - **.venv\Scripts\Activate.ps1**. This will activate the *.venv* environment that has been created, you can see that the terminal will now be of the form (.venv)  
+
+To leave the virtual environment, use the **deactivate** command in the shell, you can use these 2 sets of commands to activate and deactivate virtual environments in venv.  
+
+Once you ar inside the venv, you can install all the packages that you want to install, a good practise of installing packages is using the following format - **python -m pip install <package>**  
+
+
+
+
+## First Django Project  
+
+Let us go ahead and create a new django project, for this use the following command:  **django-admin startproject <project_name> .**
+
+Here we end with a ".", this is just a structure related thing. If you did not add a period, then (lets say project name is zeus) django creates a zeus root folder, inside there will be a zeus subfolder and manage.py file and .venv, if you add the ".", the root folder won't get created.
+
+Now, we can run the internal server by running **python manage.py runserver** command, this is done for internal development purpose only, but when we want to deploy, we will shift to a more robust WSGI server called *Gunicorn*.
+
+We can use ctrl+C to exit from the internal deployment.
+
+Since we have created a project with a given project name, we can take some time to explore the directory that django has provided for us, the different folders and files that are created when you run startproject. Let us take a deep dive into this.  
+
+First a folder, and a file are created, the foldername is the same as the projectname that is given, and a file called *manage.py* is created, this along with the already existing *.venv* folder.
+In the folder, there are 5 different .py files. We can take a look at each of them:  
+
+1. \_\_init__.py - This initialises a package for the project. Without this, we might not be able to import stuff from this package.
+2. asgi.py - It allows for Asynchronous Server Gateway Interface to be run.
+3. urls.py - This tells django which pages to build for a URL request
+4. wsgi.py - This is used for Web Server Gateway Interface, which allows django to serve web pages.
+5. manage.py - This is not a part of the project but it is used to run various Django commands.
+
+When we run the webserver commmand, we see a warning of unapplied migrations, this warning is saying that we have not migrated our initial database. We can get rid of this by **python manage.py migrate**. This command will create a SQLite database and migrated its built in apps that are provided to us, you can see a new file in the structure called *db.sqlite3*.
+
+Let us take a quick look at HTTP Request/Response Cycle
+
+### HTTP Request/Response Cycle
+
+A HTTP request is sent to a URL by the client and the server responds with a response. 
+
+Flow :  
+HTTP Request -> URL -> Django combines database, logic, styling ->
+HTTP Response
+
+**MVC Vs MVT**
+
+MVC stands for Model-View-Controller architecture, it seperates the data, logic and display of a website. Many web frameworks like Spring, Laravel and .NET, many use it. The components of MVC are
+1. Model - Manages data and control logic
+2. View - Sends data in a particular format
+3. Controller - Takes user input and performs logic on it
+
+Django loosely follows the MVC architecture, it has its own version called the MVT - Model View Template architecture. It actually has a extra structure called MVTU - an extra URL Configuration component. 
+
+1. Model: Manages data and core business logic
+2. View: Describes which data is sent to the user but not its presentation
+3. Template: Presents the data as HTML with optional CSS, JavaScript, and Static Assets
+4. URL Configuration: Regular-expression components configured to a view
+
+Let us understand the django flow of a project.  
+
+1. When you enter a URL, the URL pattern in urls.py is found. 
+2. This pattern is linked to a view in views.py
+3. This view has a model, from models.py, where is gets some data and the styling from the template which is returned to user. 
+
+HTTP Request -> URL -> View -> Model and Template -> HTTP Response
+
+Django uses the concept of projects and apps as a software practise. A high level project contains many apps and each app runs a functionality.
+
+We can create an app in django with the following command: **python manage.py startapp <app_name>**
+
+This creates an app folder inside the project folder with the following files  
+
+1. \_\_init__.py
+2. admin.py
+3. apps.py
+4. models.py
+5. tests.py
+6. views.py
+7. migrations/ folder which has an \_\_init__.py file inside it.
+
+Let us look at what each file does - 
+
+1. admin.py is a configuration file for the built-in Django Admin app
+2. apps.py is a configuration file for the app itself 
+3. migrations/ keeps track of any changes to our models.py file so it stays in sync with our database
+4. models.py is where we define our database models which Django automatically translates into database tables
+5. tests.py is for app-specific tests
+6. views.py is where we handle the request/response logic for our web app
+
+
+Even though the app is created, django project doesnt know it exists, so we need to go to settings.py file in project and add it. 
+
+In the settings.py file, find *INSTALLED\_APPS* and add *"pages.apps.PagesConfig",* to it, here *pages* is the appname which can change.
+
+Go to the pages app folder, and inside go to apps.py, where you will find PagesConfig class, with its name and its model
+
+
+## Creating a View
