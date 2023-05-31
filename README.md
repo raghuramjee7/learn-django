@@ -112,3 +112,26 @@ Go to the pages app folder, and inside go to apps.py, where you will find PagesC
 
 
 ## Creating a View
+
+All views are created in views.py. Open that file and create a function that returns a HttpResponse object (django.HttpResponse) for a request.
+
+In django, there are three types of views  
+1. Function Based Views
+2. Class Based Views
+3. Generic Class Based Views
+
+Next, need to create a new file called *urls.py* for the app, note that there also exists another *urls.py* for the whole project.
+
+In the *urls.py* for the app, import the necessary variables like path and create  list variable called *urlpatterns*, in that add a *path(\<regex>, \<view function>, name = \<alias>)* and add the view to the variable.
+
+Here, the regex pattern provided references to the view, and there is an optional named url pattern variable.
+
+Next, go to urls.py in the project level and add this *path("", include("pages.urls")),* to the urlpatterns variable there. Here, pages.urls refers to the urls files of the app that has been created.
+
+So, here the flow goes from top level urls.py to app level urls.py.
+
+### GIT
+
+1. Initialise the git repo inside the venv and add the *.venv/* folder to gitignore.
+2. We can use the **pip freeze > requirements.txt** to generate a txt file of all the packages used in virtual environment.
+
