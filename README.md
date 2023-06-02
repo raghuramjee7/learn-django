@@ -135,3 +135,78 @@ So, here the flow goes from top level urls.py to app level urls.py.
 1. Initialise the git repo inside the venv and add the *.venv/* folder to gitignore.
 2. We can use the **pip freeze > requirements.txt** to generate a txt file of all the packages used in virtual environment.
 
+
+## Lets explore pages app further
+
+We can create views in two different ways  
+1. You can create a templates folder in the app, and create a subfolder with app name and then put your template files there. eg: pages -> templates -> pages -> index.html
+2. We can create a project level templates folder and put our templates there. We need to tweak our seeting.py file in django_project for this
+
+
+Let us try the second appraoch.  
+Create a new folder - mkdir templates  
+Go to *settings.py* and find the *Templates* list variable, inside find the *DIRS* list and add **[BASE_DIR / "templates"],**  to that.
+
+Create a new *home.html* in templates and add a new view to it.
+
+### Class Based Views  
+
+Earlier, django only supported function-based views, but the need for a more generic, extensible class based views gave developer more reusability and flexibility to work with them.
+
+Open the *views.py* file in pages.  
+There is a class in django.views.generic called TemplateView. We shall use that.
+
+Import TemplateView, create a new class *HomePageView* that extends from it, and initialise **template_name = "home.html"**
+
+Now we have to update the urls, here we have urls.py at a project level and urls.py at app level.  
+
+In the project level urls.py we need to add urls.py from pages, and then we update urls in pages for the page to render.
+
+Go to urls.py in pages and similar to how you updated last time, keep everything the same, except earlier you added the function name in urlpatterns, now you add **ClassName.as_view()** to it.
+
+Similarly lets create an about page as well. For the path function, in earlier homepage, we left the first argument as "", but for about page, please add "about/" this will create a new url path for that page.
+
+### Extending Tempaltes
+
+We can extend templates in django, we could create a base.html sort of base template and extend the other templates on this. Lets create a base template that has home and about page in urls.
+
+Lets look at the extending template part a bit.
+We have a jinja syntax that can take care of this, to directly link urls use this :  
+\<a href="{% url 'home' %}">Home\</a>
+
+Here {% %} is the jinja syntax, using the *url* parameter we can directly link the page to home. Remember this "home" is the viewname you created in the urlpatterns template. 
+
+We add the following at the end of the template  
+{% block content %} {% endblock content %}
+
+This part is where the extended tempaltes body beings, and the content is the name of the block.
+
+Now you gotta update the templates home and about. Now that you have a base template, you can get rid off all the excess html stuff and add something like this.
+
+{% extends "base.html" %}  
+{% block content %}  
+\<h1>Homepage\</h1>  
+{% endblock content %}
+
+Now the first part tells the template to extend from base template  
+The second part is telling us where the block content begins. This is useful when you have mutliple blocks in base seperated by something, so you can extend individual blocks
+
+
+## Testing
+
+As we keep coding, we need to write test cases for each function. There are two types of testing :  
+1. Unit Testing - This is to test individual pieces of code independently. 
+2. Integration Testing - This is to test multiple pieces linked together.
+
+We need to write more unit tests and less integration tests. We have a library in python called **unittest** that can handle it. It has a long list of *TestCase* instances and *assert* methods to take care of it.
+
+Django has a seperate testing framework on top of unittest.Testcase. This includes a testclient - a dummy web browser and 4 test case classes  
+1. SimpleTestCase - no database tests
+2. TestCase - when database tests
+3. TransactionTestCase - test database transactions
+4. LiveServerTestCase - for testing with selenium
+
+Simple Note: We have camelCase notation in django.test, not the usual python snake_case. This is becuase this unittest framework is brought from jUnit which uses camelCase and it remained the same.
+
+
+
