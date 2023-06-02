@@ -209,4 +209,50 @@ Django has a seperate testing framework on top of unittest.Testcase. This includ
 Simple Note: We have camelCase notation in django.test, not the usual python snake_case. This is becuase this unittest framework is brought from jUnit which uses camelCase and it remained the same.
 
 
+In out pages app, we already have a tests.py file ready. Here is where we will add all the testcases.
+
+The testing strategy is simple for now. We write tests for both the pages and check for their response. They should return a *200* status as sucess. That means that the pages are working fine.
+
+class HomepageTests(SimpleTestCase):  
+ def test_url_exists_at_correct_location(self):  
+ response = self.client.get("/")  
+ self.assertEqual(response.status_code, 200)  
+
+To run the tests, use **python manage.py test**
+
+We can also test the url name for each page. Use the same strategy but use a function called reverse (from django.urls) and pass the url name and see is we can fetch it. Add a new function for that test in the test class. 
+
+We can also test if the correct template is returned for each page and the expected content is displayed. Use assertions like assertTemplateUsed and assertContains to verify them.  
+
+
+### Production Deployment
+
+To deploy our changes into production, we will use heroku. The setting up and creating everything in heroku is pretty straight forward, but we do need some extra setup from our side.  
+
+Deployment Checklist  
+1. install Gunicorn
+2. create a requirements.txt file
+3. update ALLOWED_HOSTS in django_project/settings.py
+4. create a Procfile
+5. create a runtime.txt file
+
+
+Install Gunicorn with pip : **python -m pip install gunicorn==20.1.0**
+Create requirements.txt : **python -m pip freeze > requirements.txt**
+Add "*" in the ALLOWED_HOSTS list in django_project/settings.py. This now will allow all the domains. We learn about settin it up later.  
+Create a Procfile in the base directory, next to manage.py. This procfile is specific to heroku. Add the following content to it  
+**web: gunicorn django_project.wsgi --log-file -**
+Create a runtime.txt to explicity set the python version there. Add this to it **python-3.10.2**
+
+### Heroku Side changes
+
+Here is the checklist for creating app in heroku  
+1. create a new app on Heroku - **heroku create**. This also creates a remote called heroku for us. You can check this out by running **git remote -v**. Now we have a remote that we can push the changes to, similar to Git.
+2. disable the collection of static files
+3. push the code up to Heroku
+4. start the Heroku server so the app is live
+5. visit the app on Heroku’s provided URL
+
+
+Will continue heroku later. Since its not a viable alternative at the moment. Shall come back to it later.
 
